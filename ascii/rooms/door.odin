@@ -10,13 +10,13 @@ Door :: struct {
 
 get_current_door :: proc(r: ^Room, player_x, player_y: i32) -> ^Door {
     doors := r.doors
-    founded : Door
+    founded : ^Door
     for &d in doors {
         if d.x == player_x && d.y == player_y {
-            return &d
+            founded = &d
         }
     }
-    return nil
+    return founded
 }
 
 load_room_from_door :: proc(rooms: ^[]Room, d: ^Door, current_pos: i32) -> ([2]i32, ^Room) {

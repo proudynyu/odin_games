@@ -1,5 +1,6 @@
 package main
 
+import "core:fmt"
 import "core:log"
 import rl "vendor:raylib"
 
@@ -38,6 +39,12 @@ update :: proc(p: ^Player, level_rooms: ^[]rooms.Room) {
     starter_room := rooms.load_starter_room(level_rooms)
     current_room := starter_room
 
+    left_room :=    &level_rooms[1]
+    right_room :=   &level_rooms[2]
+
+    left_border := i32(1)
+    right_border := i32(GRID_WIDTH - 2)
+
     for {
             if rl.WindowShouldClose() {
                 break
@@ -54,33 +61,26 @@ update :: proc(p: ^Player, level_rooms: ^[]rooms.Room) {
             current_pos := current_room.layout[next_y][next_x]
 
             if current_pos == 2  {
-                door := rooms.get_current_door(current_room, next_y, next_x)
+                door := rooms.get_current_door(current_room, next_x, next_y)
+
+                fmt.printfln("Door: %v", door)
                 if door == nil {
-                    log.fatal("Could not load the correct door")
+                    fmt.printf("Error loading door: %v", door)
+                    fmt.printf("----DEBUG: \n%v, \n%v, \n%v\n\n----", current_room, next_y, next_x)
                     break
                 }
 
                 spawn, loaded_room := rooms.load_room_from_door(level_rooms, door, current_pos)
+                if loaded_room == nil {
+                    fmt.printf("----DEBUG: \n%v, \n%v\n\n----", door, current_pos)
+                    fmt.printf("----DEBUG: \n%v, \n%v\n\n----", spawn, loaded_room)
+                }
+
                 current_room = loaded_room
-                next_x := spawn.x
-                next_y := spawn.y
-                // if current_room == left_room {
-                //     current_room = starter_room 
-                //     next_x = left_border
-                // } else if current_room == right_room {
-                //     current_room = starter_room
-                //     next_x = right_border
-                // } else
-                // if current_room == starter_room {
-                //     if next_x == GRID_WIDTH - 1 {
-                //         current_room = right_room
-                //         next_x = left_border 
-                //     }
-                //     if next_x == 0 {
-                //         current_room = left_room
-                //         next_x = right_border
-                //     } 
-                // } 
+                next_x = spawn.x
+                next_y = spawn.y
+
+                fmt.printf("----DEBUG: \n%v, \n%v, \n%v\n\n----", spawn, []i32{next_x, next_y}, current_room.layout[next_y][next_x])
             }
 
             if current_room.layout[next_y][next_x] == 0 {
@@ -93,6 +93,7 @@ update :: proc(p: ^Player, level_rooms: ^[]rooms.Room) {
 
             rl.ClearBackground(rl.BLACK)
 
+            draw_grid(current_room)
 
             player_px_x := p.x * CELL_SIZE
             player_px_y := p.y * CELL_SIZE

@@ -16,7 +16,7 @@
             "y": 6,
             "spawn_x": 1,
             "spawn_y": 6,
-            "target": "rigth_room"
+            "target": "right_room"
         }
     ],
     "layout": [

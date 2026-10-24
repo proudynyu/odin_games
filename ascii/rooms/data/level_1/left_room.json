@@ -10,7 +10,7 @@
             "y": 6,
             "spawn_x": 1,
             "spawn_y": 6,
-            "target": "starter_room.json"
+            "target": "starter_room"
         }
     ],
     "layout": [
